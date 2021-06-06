@@ -216,9 +216,9 @@
     
     
     
-    <category term="web" scheme="https://as1def.github.io/tags/web/"/>
-    
     <category term="CVE" scheme="https://as1def.github.io/tags/CVE/"/>
+    
+    <category term="web" scheme="https://as1def.github.io/tags/web/"/>
     
   </entry>
   
