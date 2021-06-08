@@ -362,6 +362,102 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2021/06/06/NEWSCTF2021-Web/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="As1def">
+      <meta itemprop="description" content="听懂了一首歌,生活中回响着旋律">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="As1def's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/06/06/NEWSCTF2021-Web/" class="post-title-link" itemprop="url">NEWSCTF2021-Web</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-06 20:29:52" itemprop="dateCreated datePublished" datetime="2021-06-06T20:29:52+08:00">2021-06-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-08 20:34:52" itemprop="dateModified" datetime="2021-06-08T20:34:52+08:00">2021-06-08</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>整理的一下几个web题，题目难度感觉有点大，tcl….</p>
+<h3 id="easy-web"><a href="#easy-web" class="headerlink" title="easy_web"></a><strong>easy_web</strong></h3><p>题目源码</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="PHP"><figure class="iseeu highlight /php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">            $six_number = $_POST[<span class="string">'webp'</span>];</span><br><span class="line">            $a = $_POST[<span class="string">'a'</span>];</span><br><span class="line">            $b = $_POST[<span class="string">'b'</span>];</span><br><span class="line">            $c = $_POST[<span class="string">'c'</span>];</span><br><span class="line">            <span class="keyword">if</span> (md5($six_number) == <span class="string">'e10adc3949ba59abbe56e057f20f883e'</span> &amp;&amp; md5($a) === md5($b) &amp;&amp; $a !== $b) &#123;</span><br><span class="line">                <span class="keyword">if</span>($array[++$c]=<span class="number">1</span>)&#123;</span><br><span class="line">                    <span class="keyword">if</span>($array[]=<span class="number">1</span>)&#123;</span><br><span class="line">                        <span class="keyword">echo</span> <span class="string">"nonono"</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">else</span>&#123;</span><br><span class="line">                        <span class="keyword">require_once</span> <span class="string">'flag.php'</span>;</span><br><span class="line">                        <span class="keyword">echo</span> $flag;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; </span><br><span class="line">        <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>首先绕过md5，直接利用数组绕过，即首先可构造出：payload=&gt;</p>
+<div class="highlight-wrap" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true" data-rel="ANGELSCRIPT"><figure class="iseeu highlight /angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">webp=<span class="number">123456</span>&amp;a[]=<span class="number">1</span>&amp;b[]=<span class="number">2</span></span><br></pre></td></tr></table></figure></div>
+
+<p>接下来就是需要让$array[]=1不成立，想到数组溢出，php可计算的最大数值在32和64位中分别为：<code>2147483647</code>、<code>9223372036854775807</code></p>
+<p>这里输入9223372036854775806，当执行++$c后，会产生数组溢出，到$array[]=1时便会抛出错误，使赋值失败，从而输入flag。</p>
+<p>即payload=&gt;<code>webp=123456&amp;a[]=1&amp;b[]=2&amp;c=9223372036854775806</code></p>
+<p>得到的是一个密码，之后拿网站下的背景图片解misc得到flag。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/06/06/NEWSCTF2021-Web/" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2021/05/11/%E6%B4%A5%E9%97%A8%E6%9D%AF-Web-Writeup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -948,92 +1044,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://as1def.github.io/2020/12/05/CVE-2020-14882-14883%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="As1def">
-      <meta itemprop="description" content="听懂了一首歌,生活中回响着旋律">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="As1def's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/12/05/CVE-2020-14882-14883%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">CVE-2020-14882&14883漏洞分析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-12-05 12:10:34" itemprop="dateCreated datePublished" datetime="2020-12-05T12:10:34+08:00">2020-12-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-05 14:44:05" itemprop="dateModified" datetime="2021-04-05T14:44:05+08:00">2021-04-05</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="CVE-2020-14882-amp-14883-weblogic未授权访问漏洞"><a href="#CVE-2020-14882-amp-14883-weblogic未授权访问漏洞" class="headerlink" title="CVE-2020-14882&amp;14883 weblogic未授权访问漏洞"></a><strong>CVE-2020-14882&amp;14883 weblogic未授权访问漏洞</strong></h3><p><img src="https://i.loli.net/2021/04/05/jWBu8qPnEQx6Ysg.png" alt="img"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/12/05/CVE-2020-14882-14883%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1104,7 +1114,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1162,13 +1172,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">162k</span>
+    <span title="站点总字数">175k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">2:28</span>
+    <span title="站点阅读时长">2:39</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
